@@ -565,8 +565,14 @@ void forward_backward()
 	data_nBnF->GetXaxis()->SetTitle("N_F");
     data_nBnF->GetYaxis()->SetTitleOffset(1.3);
     data_nBnF->GetYaxis()->SetTitle("<N_B>_F");
+    data_nBnF->Fit("pol1");
     data_nBnF->Write();
-	
+	//Minimizer is Linear
+	//Chi2                      =      4183.96
+	//NDf                       =           39
+	//p0                        =      1.13039   +/-   0.00336126  
+	//p1                        =     0.620851   +/-   0.00092664  
+
 
     data_plot.Write();
 

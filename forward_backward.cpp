@@ -14,7 +14,7 @@
 #include "TDirectory.h"
 #include "TH1.h"
 #include "TH2.h"
-#inclide "TProfile.h"
+#include "TProfile.h"
 #include "TLorentzVector.h"
 #include "TCanvas.h"
 #include "TMath.h"
@@ -162,17 +162,18 @@ void forward_backward()
 	
 	
 	//============================== Histos for Forward Backward Multiplicity ==============================
+		 //(name, title, nbinsx = 50, xlow=0, xup=50, nbinsy=50, ylow=0, yup)
 	TH2D *data_fb_multiplicity = new TH2D ("FB Multiplicity", "FB Multiplicity", 50, 0, 50, 50, 0, 50);
 	TH1D *data_fb_eta = new TH1D("FB eta", "FB eta ", 50, -2.5, 2.5); // for checking if eta cuts are done correctly
-	// TODO TProfile *data_nBnF = new TProfile("<N_B> vs N_F", "<N_B> vs N_F", 
-
+    TProfile *data_nBnF = new TProfile("<N_B>_F vs N_F", "<N_B>_F vs N_F", 50, 0, 50); 
+  	//TProfile (const char *name, const char *title, Int_t nbinsx, Double_t xlow, Double_t xup, Option_t *option="")
 	
 	//============================== retrieve ROOT file ==============================
 
 	vector<TString> *datafiles = new vector<TString>();
     cout << "Getting list of files..." << endl;
 
-    datafiles = getListOfFiles("/mnt/c/Users/Zongjin-Dell/Desktop/Multiplicity/list_of_files.txt");		//reldir
+    datafiles = getListOfFiles("/home/uduntu/Desktop/Files_AOD_L1MinimumBiasHF.txt");		//reldir
     cout << "File list stored" << endl;
 
         TFile *datafile;
@@ -415,7 +416,6 @@ void forward_backward()
 										{
 											++fdata_backward_multiplicity;
 										}
-										
 										data_fb_eta->Fill(data_vec.Eta());
 										//++fdata_fb_multiplicity_norm;
 									}
@@ -432,7 +432,7 @@ void forward_backward()
 							// ============================== Filling of Forward Backward Multiplicity histograms ==============================
 									
 							data_fb_multiplicity->Fill(fdata_forward_multiplicity, fdata_backward_multiplicity);
-							
+							data_nBnF -> Fill(fdata_forward_multiplicity, fdata_backward_multiplicity);
 							
 							
 							//============================== Filling of triggered efficiencies ==============================
@@ -462,7 +462,7 @@ void forward_backward()
 	
 	//============================== Create root file, plot histograms ==============================
 	
-	TFile data_plot("/mnt/c/Users/Zongjin-Dell/Desktop/Multiplicity/fb.root", "recreate");		//reldir
+	TFile data_plot("/home/uduntu/Desktop/fb.root", "recreate");		//reldir
 
 
     data_eta_histo->Scale(1./fdata_trketa);
@@ -560,6 +560,12 @@ void forward_backward()
     data_fb_eta->GetYaxis()->SetTitleOffset(1.3);
     data_fb_eta->GetYaxis()->SetTitle("Number of Tracks");
     data_fb_eta->Write();
+
+    // <N_B> vs N_F TProfile Multiplicity Plots
+	data_nBnF->GetXaxis()->SetTitle("N_F");
+    data_nBnF->GetYaxis()->SetTitleOffset(1.3);
+    data_nBnF->GetYaxis()->SetTitle("<N_B>_F");
+    data_nBnF->Write();
 	
 
     data_plot.Write();
